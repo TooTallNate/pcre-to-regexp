@@ -121,9 +121,6 @@ function replaceCaptureGroups (pattern, fn) {
       case '\\':
         escaped = true;
         break;
-      default:
-        // any other letter
-        break;
     }
   }
   return pattern;
