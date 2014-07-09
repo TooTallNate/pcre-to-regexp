@@ -29,7 +29,10 @@ describe('PCRE(pattern[, flags])', function () {
       var url = 'https://twitter.com/tootallnate/status/481604870626349056';
       var keys = [];
       var re = PCRE("%^https?:\/\/twitter\\.com(\/\\#\\!)?\/(?P<username>[a-zA-Z0-9_]{1,20})\\\/status(es)?\/(?P<id>\\d+)\/?$%i", keys);
-      assert.deepEqual(keys, [ 'username', 'id' ]);
+      var expectedKeys = new Array(4);
+      expectedKeys[1] = 'username';
+      expectedKeys[3] = 'id';
+      assert.deepEqual(keys, expectedKeys);
       var match = re.exec(url);
       assert(match);
       assert(match[2] === 'tootallnate');
