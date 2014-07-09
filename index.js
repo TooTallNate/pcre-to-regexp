@@ -40,9 +40,22 @@ function PCRE (pattern, namedCaptures) {
   }
 
   // populate namedCaptures array and removed named captures from the `pattern`
-  pattern = pattern.replace(/\(\?P<([^\>]+)>([^\)]+)\)/g, function (capture, name, regexp) {
-    if (namedCaptures) namedCaptures.push(name);
-    return '(' + regexp + ')';
+  var numGroups = 0;
+  pattern = replaceCaptureGroups(pattern, function (group) {
+    if ('(?P' === group.substring(0, 3)) {
+      // PCRE-style "named capture"
+      var match = /^\(\?P<([^\>]+)>([^\)]+)\)$/.exec(group);
+      if (namedCaptures) namedCaptures[numGroups] = match[1];
+      numGroups++;
+      return '(' + match[2] + ')';
+    } else if ('(?:' === group.substring(0, 3)) {
+      // non-capture group, leave untouched
+      return group;
+    } else {
+      // regular capture, leave untouched
+      numGroups++;
+      return group;
+    }
   });
 
   // TODO: convert PCRE-only flags to JS
@@ -56,4 +69,58 @@ function PCRE (pattern, namedCaptures) {
   regexp.pcreFlags = flags;
 
   return regexp;
+}
+
+/**
+ * Invokes `fn` for each "capture group" encountered in the PCRE `pattern`,
+ * and inserts the returned value into the pattern instead of the capture
+ * group itself.
+ *
+ * @private
+ */
+
+function replaceCaptureGroups (pattern, fn) {
+  var start;
+  var depth = 0;
+  var escaped = false;
+
+  for (var i = 0; i < pattern.length; i++) {
+    var cur = pattern[i];
+    if (escaped) {
+      // skip this letter, it's been escaped
+      escaped = false;
+      continue;
+    }
+    switch (cur) {
+      case '(':
+        // we're only interested in groups when the depth reaches 0
+        if (0 === depth) {
+          start = i;
+        }
+        depth++;
+        break;
+      case ')':
+        if (depth > 0) {
+          depth--;
+
+          // we're only interested in groups when the depth reaches 0
+          if (0 === depth) {
+            var end = i + 1;
+            var l = start === 0 ? '' : pattern.substring(0, start);
+            var r = pattern.substring(end);
+            var v = String(fn(pattern.substring(start, end)));
+            pattern = l + v + r;
+            i = start;
+          }
+        }
+        break;
+      case '\\':
+        escaped = true;
+        break;
+      default:
+        // any other letter
+        break;
+    }
+  }
+  return pattern;
 }
