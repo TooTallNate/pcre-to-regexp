@@ -23,6 +23,21 @@ describe('PCRE(pattern[, flags])', function () {
 
   });
 
+  describe('given "%^https?:\/\/twitter\\.com(\/\\#\\!)?\/(?P<username>[a-zA-Z0-9_]{1,20})\\\/status(es)?\/(?P<id>\\d+)\/?$%i"', function () {
+
+    it('should match "https://twitter.com/tootallnate/status/481604870626349056"', function () {
+      var url = 'https://twitter.com/tootallnate/status/481604870626349056';
+      var keys = [];
+      var re = PCRE("%^https?:\/\/twitter\\.com(\/\\#\\!)?\/(?P<username>[a-zA-Z0-9_]{1,20})\\\/status(es)?\/(?P<id>\\d+)\/?$%i", keys);
+      assert.deepEqual(keys, [ 'username', 'id' ]);
+      var match = re.exec(url);
+      assert(match);
+      assert(match[2] === 'tootallnate');
+      assert(match[4] === '481604870626349056');
+    });
+
+  });
+
 });
 
 function isRegExp(re) {
