@@ -1,0 +1,35 @@
+{
+  "name": "pcre-to-regexp",
+  "version": "0.0.0",
+  "description": "Converts PCRE regexp strings to JavaScript RegExp instances",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha --reporter spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/TooTallNate/pcre-to-regexp.git"
+  },
+  "keywords": [
+    "pcre",
+    "regexp",
+    "convert",
+    "js",
+    "php",
+    "preg",
+    "preg_replace",
+    "preg_match"
+  ],
+  "author": "Nathan Rajlich <nathan@tootallnate.net>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TooTallNate/pcre-to-regexp/issues"
+  },
+  "homepage": "https://github.com/TooTallNate/pcre-to-regexp",
+  "devDependencies": {
+    "mocha": "~1.20.1"
+  }
+}
