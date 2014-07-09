@@ -1,4 +1,12 @@
 
+0.0.3 / 2014-07-09
+==================
+
+ * test: move "keys" tests into their own test cases
+ * add .travis.yml file
+ * add README.md
+ * index: support PHP 5.2.2-style "alternative" named captures
+
 0.0.2 / 2014-07-09
 ==================
 
