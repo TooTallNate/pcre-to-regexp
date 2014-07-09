@@ -41,6 +41,33 @@ describe('PCRE(pattern[, flags])', function () {
 
   });
 
+  // PHP 5.2.2-style "alternative" named capture stynax using single quotes
+  describe('given "#(?\'name\'foo)bar#"', function () {
+
+    it('should match "foobar"', function () {
+      var keys = [];
+      var re = PCRE("#(?\'name\'foo)bar#", keys);
+      assert.deepEqual(keys, ['name']);
+      var match = re.exec('foobar');
+      assert(match[1] === 'foo');
+    });
+
+  });
+
+  // PHP 5.2.2-style "alternative" named capture stynax using angle brackets
+  describe('given "#(?<name>foo)bar#"', function () {
+
+    it('should match "foobar"', function () {
+      var keys = [];
+      var re = PCRE("#(?<name>foo)bar#", keys);
+      assert.deepEqual(keys, ['name']);
+      var match = re.exec('foobar');
+      assert(match);
+      assert(match[1] === 'foo');
+    });
+
+  });
+
 });
 
 function isRegExp(re) {

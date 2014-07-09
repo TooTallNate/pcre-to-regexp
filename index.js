@@ -42,9 +42,13 @@ function PCRE (pattern, namedCaptures) {
   // populate namedCaptures array and removed named captures from the `pattern`
   var numGroups = 0;
   pattern = replaceCaptureGroups(pattern, function (group) {
-    if ('(?P' === group.substring(0, 3)) {
+    if (/^\(\?[P<']/.test(group)) {
       // PCRE-style "named capture"
-      var match = /^\(\?P<([^\>]+)>([^\)]+)\)$/.exec(group);
+      // It is possible to name a subpattern using the syntax (?P<name>pattern).
+      // This subpattern will then be indexed in the matches array by its normal
+      // numeric position and also by name. PHP 5.2.2 introduced two alternative
+      // syntaxes (?<name>pattern) and (?'name'pattern).
+      var match = /^\(\?P?[<']([^>']+)[>']([^\)]+)\)$/.exec(group);
       if (namedCaptures) namedCaptures[numGroups] = match[1];
       numGroups++;
       return '(' + match[2] + ')';
