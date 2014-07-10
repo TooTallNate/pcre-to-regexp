@@ -3,7 +3,29 @@
  * Module exports.
  */
 
-module.exports = PCRE;
+exports = module.exports = PCRE;
+
+/**
+ * Mapping of "character class" names to their JS RegExp equivalent.
+ *
+ * See: http://en.wikipedia.org/wiki/Regular_expression#Character_classes
+ */
+
+exports.characterClasses = {
+  alnum: '[A-Za-z0-9]',
+  word: '[A-Za-z0-9_]',
+  alpha: '[A-Za-z]',
+  blank: '[ \\t]',
+  cntrl: '[\\x00-\\x1F\\x7F]',
+  digit: '\\d',
+  graph: '[\\x21-\\x7E]',
+  lower: '[a-z]',
+  print: '[\\x20-\\x7E]',
+  punct: '[\\]\\[!"#$%&\'()*+,./:;<=>?@\\\\^_`{|}~-]',
+  space: '\\s',
+  upper: '[A-Z]',
+  xdigit: '[A-Fa-f0-9]'
+};
 
 /**
  * Returns a JavaScript RegExp instance from the given PCRE-compatible string.
@@ -60,6 +82,11 @@ function PCRE (pattern, namedCaptures) {
       numGroups++;
       return group;
     }
+  });
+
+  // replace "character classes" with their raw RegExp equivalent
+  pattern = pattern.replace(/\[\:([^\:]+)\:\]/g, function (characterClass, name) {
+    return exports.characterClasses[name] || characterClass;
   });
 
   // TODO: convert PCRE-only flags to JS

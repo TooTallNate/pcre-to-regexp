@@ -44,6 +44,113 @@ describe('PCRE(pattern[, flags])', function () {
 
   });
 
+  // "Character classes"
+  describe('given "/[:alnum:]/"', function () {
+
+    it('should match "1"', function () {
+      var re = PCRE("/[:alnum:]/");
+      assert(re.test('1'));
+    });
+
+    it('should match "0"', function () {
+      var re = PCRE("/[:alnum:]/");
+      assert(re.test('0'));
+    });
+
+    it('should match "a"', function () {
+      var re = PCRE("/[:alnum:]/");
+      assert(re.test('a'));
+    });
+
+    it('should match "Z"', function () {
+      var re = PCRE("/[:alnum:]/");
+      assert(re.test('Z'));
+    });
+
+  });
+
+  describe('given "/[:lower:]/"', function () {
+
+    it('should match "a"', function () {
+      var re = PCRE("/[:lower:]/");
+      assert(re.test('a'));
+    });
+
+    it('should not match "A"', function () {
+      var re = PCRE("/[:lower:]/");
+      assert(!re.test('A'));
+    });
+
+    it('should not match "0"', function () {
+      var re = PCRE("/[:lower:]/");
+      assert(!re.test('0'));
+    });
+
+  });
+
+  describe('given "/[:digit:]/"', function () {
+
+    it('should match "3"', function () {
+      var re = PCRE("/[:digit:]/");
+      assert(re.test('3'));
+    });
+
+    it('should not match "G"', function () {
+      var re = PCRE("/[:digit:]/");
+      assert(!re.test('G'));
+    });
+
+  });
+
+  describe('given "/[:punct:]/"', function () {
+
+    it('should match "]"', function () {
+      var re = PCRE("/[:punct:]/");
+      assert(re.test(']'));
+    });
+
+    it('should match "!"', function () {
+      var re = PCRE("/[:punct:]/");
+      assert(re.test('!'));
+    });
+
+    it('should match "/"', function () {
+      var re = PCRE("/[:punct:]/");
+      assert(re.test('/'));
+    });
+
+    it('should match "\\"', function () {
+      var re = PCRE("/[:punct:]/");
+      assert(re.test('\\'));
+    });
+
+    it('should match "^"', function () {
+      var re = PCRE("/[:punct:]/");
+      assert(re.test('^'));
+    });
+
+    it('should match "|"', function () {
+      var re = PCRE("/[:punct:]/");
+      assert(re.test('|'));
+    });
+
+    it('should match "~"', function () {
+      var re = PCRE("/[:punct:]/");
+      assert(re.test('~'));
+    });
+
+    it('should not match " "', function () {
+      var re = PCRE("/[:punct:]/");
+      assert(!re.test(' '));
+    });
+
+    it('should not match "f"', function () {
+      var re = PCRE("/[:punct:]/");
+      assert(!re.test('f'));
+    });
+
+  });
+
   // PHP 5.2.2-style "alternative" named capture stynax using single quotes
   describe('given "#(?\'name\'foo)bar#"', function () {
 
