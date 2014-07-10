@@ -37,13 +37,13 @@ console.log(re);
 
 var match = re.exec('https://twitter.com/tootallnate/status/481604870626349056');
 console.log(match);
-// [ 'https://twitter.com/justinabrahms/status/486924059264163840',
+// [ 'https://twitter.com/tootallnate/status/481604870626349056',
 //   undefined,
-//   'justinabrahms',
+//   'tootallnate',
 //   undefined,
-//   '486924059264163840',
+//   '481604870626349056',
 //   index: 0,
-//   input: 'https://twitter.com/justinabrahms/status/486924059264163840' ]
+//   input: 'https://twitter.com/tootallnate/status/481604870626349056' ]
 ```
 
 Use code like this if you would like to transfer the "named captures" to the
