@@ -7,6 +7,7 @@ exports = module.exports = PCRE;
 
 /**
  * Mapping of "character class" names to their JS RegExp equivalent.
+ * So that /[:digit:]/ gets converted into /\d/, etc.
  *
  * See: http://en.wikipedia.org/wiki/Regular_expression#Character_classes
  */
