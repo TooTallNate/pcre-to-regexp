@@ -187,8 +187,8 @@ describe('PCRE(pattern[, flags])', function () {
 
   });
 
-  describe('given "/^\\/blog\\/(?<uid>[^\\/]+)$/"', function () {
-    const input = '/^\\/blog\\/(?<uid>[^\\/]+)$/'
+  describe('given "%^/blog/(?<uid>[^/]+)$%"', function () {
+    const input = '%^/blog/(?<uid>[^/]+)$%'
 
     it('should have [ "uid" ] for keys', function () {
       var keys = [];
