@@ -187,6 +187,24 @@ describe('PCRE(pattern[, flags])', function () {
 
   });
 
+  describe('given "/^\\/blog\\/(?<uid>[^\\/]+)$/"', function () {
+    const input = '/^\\/blog\\/(?<uid>[^\\/]+)$/'
+
+    it('should have [ "uid" ] for keys', function () {
+      var keys = [];
+      var re = PCRE(input, keys);
+      assert.deepEqual(keys, ['uid']);
+    });
+
+    it('should match "foobar"', function () {
+      var re = PCRE(input);
+      var match = re.exec('/blog/hiking-woods');
+      assert(match);
+      assert(match[1] === 'hiking-woods');
+    });
+
+  });
+
 });
 
 function isRegExp(re) {
