@@ -71,10 +71,13 @@ function PCRE (pattern, namedCaptures) {
       // This subpattern will then be indexed in the matches array by its normal
       // numeric position and also by name. PHP 5.2.2 introduced two alternative
       // syntaxes (?<name>pattern) and (?'name'pattern).
-      var match = /^\(\?P?[<']([^>']+)[>']([^\)]+)\)$/.exec(group);
-      if (namedCaptures) namedCaptures[numGroups] = match[1];
+      var match = /^\(\?P?[<']([^>']+)[>']/.exec(group);
+      var capture = group.substring(match[0].length, group.length - 1);
+      if (namedCaptures) {
+        namedCaptures[numGroups] = match[1];
+      }
       numGroups++;
-      return '(' + match[2] + ')';
+      return '(' + capture + ')';
     } else if ('(?:' === group.substring(0, 3)) {
       // non-capture group, leave untouched
       return group;

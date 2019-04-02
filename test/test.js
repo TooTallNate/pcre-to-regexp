@@ -196,11 +196,30 @@ describe('PCRE(pattern[, flags])', function () {
       assert.deepEqual(keys, ['uid']);
     });
 
-    it('should match "foobar"', function () {
+    it('should match "hiking-woods"', function () {
       var re = PCRE(input);
       var match = re.exec('/blog/hiking-woods');
       assert(match);
       assert(match[1] === 'hiking-woods');
+    });
+
+  });
+
+  describe('given "%^/deployments/(?<host>([a-zA-Z0-9-]+\\.)+[a-zA-Z0-9]+)/(?<section>source|logs)$%"', function () {
+    const input = '%^/deployments/(?<host>([a-zA-Z0-9-]+\\.)+[a-zA-Z0-9]+)/(?<section>source|logs)$%'
+
+    it('should have [ "host", ,"section" ] for keys', function () {
+      var keys = [];
+      var re = PCRE(input, keys);
+      assert.deepEqual(keys, ['host', ,'section']);
+    });
+
+    it('should match "/deployments/sf.n8.io/logs"', function () {
+      var re = PCRE(input);
+      var match = re.exec('/deployments/sf.n8.io/logs');
+      assert(match);
+      assert(match[1] === 'sf.n8.io');
+      assert(match[3] === 'logs');
     });
 
   });
