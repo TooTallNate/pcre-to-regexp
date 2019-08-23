@@ -1,9 +1,12 @@
+interface CharacterClasses {
+  [name: string]: string;
+}
 
-/**
- * Module exports.
- */
-
-exports = module.exports = PCRE;
+interface PCRE extends RegExp {
+  delimiter?: string;
+  pcrePattern: string;
+  pcreFlags: string;
+}
 
 /**
  * Mapping of "character class" names to their JS RegExp equivalent.
@@ -12,7 +15,7 @@ exports = module.exports = PCRE;
  * See: http://en.wikipedia.org/wiki/Regular_expression#Character_classes
  */
 
-exports.characterClasses = {
+const characterClasses: CharacterClasses = {
   alnum: '[A-Za-z0-9]',
   word: '[A-Za-z0-9_]',
   alpha: '[A-Za-z]',
@@ -42,18 +45,18 @@ exports.characterClasses = {
  * @public
  */
 
-function PCRE (pattern, namedCaptures) {
+function createPCRE (pattern: string, namedCaptures?: string[]): PCRE {
   pattern = String(pattern || '').trim();
-  var originalPattern = pattern;
-  var delim;
-  var flags = '';
+  let originalPattern = pattern;
+  let delim;
+  let flags = '';
 
   // A delimiter can be any non-alphanumeric, non-backslash,
   // non-whitespace character.
-  var hasDelim = /^[^a-zA-Z\\\s]/.test(pattern);
+  let hasDelim = /^[^a-zA-Z\\\s]/.test(pattern);
   if (hasDelim) {
     delim = pattern[0];
-    var lastDelimIndex = pattern.lastIndexOf(delim);
+    let lastDelimIndex = pattern.lastIndexOf(delim);
 
     // pull out the flags in the pattern
     flags += pattern.substring(lastDelimIndex + 1);
@@ -63,16 +66,19 @@ function PCRE (pattern, namedCaptures) {
   }
 
   // populate namedCaptures array and removed named captures from the `pattern`
-  var numGroups = 0;
-  pattern = replaceCaptureGroups(pattern, function (group) {
+  let numGroups = 0;
+  pattern = replaceCaptureGroups(pattern, (group: string) => {
     if (/^\(\?[P<']/.test(group)) {
       // PCRE-style "named capture"
       // It is possible to name a subpattern using the syntax (?P<name>pattern).
       // This subpattern will then be indexed in the matches array by its normal
       // numeric position and also by name. PHP 5.2.2 introduced two alternative
       // syntaxes (?<name>pattern) and (?'name'pattern).
-      var match = /^\(\?P?[<']([^>']+)[>']/.exec(group);
-      var capture = group.substring(match[0].length, group.length - 1);
+      let match = /^\(\?P?[<']([^>']+)[>']/.exec(group);
+      if (!match) {
+        throw new Error(`Failed to extract named captures from ${JSON.stringify(group)}`);
+      }
+      let capture = group.substring(match[0].length, group.length - 1);
       if (namedCaptures) {
         namedCaptures[numGroups] = match[1];
       }
@@ -89,15 +95,15 @@ function PCRE (pattern, namedCaptures) {
   });
 
   // replace "character classes" with their raw RegExp equivalent
-  pattern = pattern.replace(/\[\:([^\:]+)\:\]/g, function (characterClass, name) {
-    return exports.characterClasses[name] || characterClass;
+  pattern = pattern.replace(/\[\:([^\:]+)\:\]/g, (characterClass: string, name: string) => {
+    return characterClasses[name] || characterClass;
   });
 
   // TODO: convert PCRE-only flags to JS
   // TODO: handle lots more stuff....
   // http://www.php.net/manual/en/reference.pcre.pattern.syntax.php
 
-  var regexp = new RegExp(pattern, flags);
+  let regexp = new RegExp(pattern, flags) as PCRE;
 
   regexp.delimiter = delim;
   regexp.pcrePattern = originalPattern;
@@ -114,13 +120,13 @@ function PCRE (pattern, namedCaptures) {
  * @private
  */
 
-function replaceCaptureGroups (pattern, fn) {
-  var start;
-  var depth = 0;
-  var escaped = false;
+function replaceCaptureGroups (pattern: string, fn: (group: string) => string): string {
+  let start = 0;
+  let depth = 0;
+  let escaped = false;
 
-  for (var i = 0; i < pattern.length; i++) {
-    var cur = pattern[i];
+  for (let i = 0; i < pattern.length; i++) {
+    let cur = pattern[i];
     if (escaped) {
       // skip this letter, it's been escaped
       escaped = false;
@@ -140,10 +146,10 @@ function replaceCaptureGroups (pattern, fn) {
 
           // we're only interested in groups when the depth reaches 0
           if (0 === depth) {
-            var end = i + 1;
-            var l = start === 0 ? '' : pattern.substring(0, start);
-            var r = pattern.substring(end);
-            var v = String(fn(pattern.substring(start, end)));
+            let end = i + 1;
+            let l = start === 0 ? '' : pattern.substring(0, start);
+            let r = pattern.substring(end);
+            let v = String(fn(pattern.substring(start, end)));
             pattern = l + v + r;
             i = start;
           }
@@ -156,3 +162,6 @@ function replaceCaptureGroups (pattern, fn) {
   }
   return pattern;
 }
+
+createPCRE.characterClasses = characterClasses;
+export = createPCRE;

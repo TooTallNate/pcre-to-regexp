@@ -2,12 +2,15 @@
   "name": "pcre-to-regexp",
   "version": "0.0.5",
   "description": "Converts PCRE regexp strings to JavaScript RegExp instances",
-  "main": "index.js",
-  "directories": {
-    "test": "test"
-  },
+  "main": "dist/index",
+  "typings": "dist/index",
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "test": "mocha --reporter spec"
+    "build": "tsc",
+    "test": "mocha --reporter spec",
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -30,6 +33,7 @@
   },
   "homepage": "https://github.com/TooTallNate/pcre-to-regexp",
   "devDependencies": {
-    "mocha": "2"
+    "mocha": "^6.2.0",
+    "typescript": "^3.5.3"
   }
 }
