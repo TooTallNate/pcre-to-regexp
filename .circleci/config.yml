@@ -1,0 +1,166 @@
+# Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
+version: 2
+jobs:
+
+  install:
+    docker:
+      - image: circleci/node:10
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "yarn.lock" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+      - run:
+          name: Installing Dependencies
+          command: yarn
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "yarn.lock" }}
+      - persist_to_workspace:
+          root: .
+          paths:
+            - node_modules
+
+  build:
+    docker:
+      - image: circleci/node:10
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Building
+          command: yarn build
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist
+
+  lint:
+    docker:
+      - image: circleci/node:10
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Output version
+          command: node --version
+      - run:
+          name: Running Linter
+          command: yarn test-lint
+
+  test-node-6:
+    docker:
+      - image: circleci/node:6
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Output version
+          command: node --version
+      - run:
+          name: Running Tests
+          command: yarn test
+
+  test-node-8:
+    docker:
+      - image: circleci/node:8
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Output version
+          command: node --version
+      - run:
+          name: Running Tests
+          command: yarn test
+
+  test-node-10:
+    docker:
+      - image: circleci/node:10
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Output version
+          command: node --version
+      - run:
+          name: Running Tests
+          command: yarn test
+
+  test-node-12:
+    docker:
+      - image: circleci/node:12
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Output version
+          command: node --version
+      - run:
+          name: Running Tests
+          command: yarn test
+
+
+workflows:
+  version: 2
+  unscheduled:
+    jobs:
+      - install:
+          filters:
+            tags:
+              only: /.*/
+      - build:
+          requires:
+            - install
+          filters:
+            tags:
+              only: /.*/
+      - lint:
+          requires:
+            - install
+          filters:
+            tags:
+              only: /.*/
+      - test-node-6:
+          requires:
+            - build
+          filters:
+            tags:
+              only: /.*/
+      - test-node-8:
+          requires:
+            - build
+          filters:
+            tags:
+              only: /.*/
+      - test-node-10:
+          requires:
+            - build
+          filters:
+            tags:
+              only: /.*/
+      - test-node-12:
+          requires:
+            - build
+          filters:
+            tags:
+              only: /.*/
