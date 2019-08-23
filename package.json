@@ -1,6 +1,6 @@
 {
   "name": "pcre-to-regexp",
-  "version": "0.0.5",
+  "version": "1.0.0",
   "description": "Converts PCRE regexp strings to JavaScript RegExp instances",
   "main": "dist/index",
   "typings": "dist/index",
