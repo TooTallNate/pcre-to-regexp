@@ -44,7 +44,7 @@ jobs:
           paths:
             - dist
 
-  test-lint:
+  lint:
     docker:
       - image: circleci/node:10
     working_directory: ~/repo
@@ -134,9 +134,9 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - test-lint:
+      - lint:
           requires:
-            - build
+            - install
           filters:
             tags:
               only: /.*/
