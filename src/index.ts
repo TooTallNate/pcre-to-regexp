@@ -45,7 +45,7 @@ const characterClasses: CharacterClasses = {
  * @public
  */
 
-function createPCRE (pattern: string, namedCaptures?: string[]): PCRE {
+function createPCRE(pattern: string, namedCaptures?: string[]): PCRE {
   pattern = String(pattern || '').trim();
   let originalPattern = pattern;
   let delim;
@@ -76,7 +76,9 @@ function createPCRE (pattern: string, namedCaptures?: string[]): PCRE {
       // syntaxes (?<name>pattern) and (?'name'pattern).
       let match = /^\(\?P?[<']([^>']+)[>']/.exec(group);
       if (!match) {
-        throw new Error(`Failed to extract named captures from ${JSON.stringify(group)}`);
+        throw new Error(
+          `Failed to extract named captures from ${JSON.stringify(group)}`
+        );
       }
       let capture = group.substring(match[0].length, group.length - 1);
       if (namedCaptures) {
@@ -95,9 +97,12 @@ function createPCRE (pattern: string, namedCaptures?: string[]): PCRE {
   });
 
   // replace "character classes" with their raw RegExp equivalent
-  pattern = pattern.replace(/\[\:([^\:]+)\:\]/g, (characterClass: string, name: string) => {
-    return characterClasses[name] || characterClass;
-  });
+  pattern = pattern.replace(
+    /\[\:([^\:]+)\:\]/g,
+    (characterClass: string, name: string) => {
+      return characterClasses[name] || characterClass;
+    }
+  );
 
   // TODO: convert PCRE-only flags to JS
   // TODO: handle lots more stuff....
@@ -120,7 +125,10 @@ function createPCRE (pattern: string, namedCaptures?: string[]): PCRE {
  * @private
  */
 
-function replaceCaptureGroups (pattern: string, fn: (group: string) => string): string {
+function replaceCaptureGroups(
+  pattern: string,
+  fn: (group: string) => string
+): string {
   let start = 0;
   let depth = 0;
   let escaped = false;
