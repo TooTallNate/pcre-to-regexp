@@ -3,7 +3,7 @@ var assert = require('assert');
 
 describe('PCRE(pattern[, flags])', function() {
 	it('should export a Function', function() {
-		assert('function' === typeof PCRE);
+		assert.strictEqual(typeof PCRE, 'function');
 	});
 
 	it('should return a RegExp instance', function() {
@@ -41,8 +41,8 @@ describe('PCRE(pattern[, flags])', function() {
 				'https://twitter.com/tootallnate/status/481604870626349056'
 			);
 			assert(match);
-			assert(match[2] === 'tootallnate');
-			assert(match[4] === '481604870626349056');
+			assert.strictEqual(match[2], 'tootallnate');
+			assert.strictEqual(match[4], '481604870626349056');
 		});
 	});
 
@@ -157,7 +157,7 @@ describe('PCRE(pattern[, flags])', function() {
 			var re = PCRE("#(?'name'foo)bar#");
 			var match = re.exec('foobar');
 			assert(match);
-			assert(match[1] === 'foo');
+			assert.strictEqual(match[1], 'foo');
 		});
 	});
 
@@ -173,7 +173,7 @@ describe('PCRE(pattern[, flags])', function() {
 			var re = PCRE('#(?<name>foo)bar#');
 			var match = re.exec('foobar');
 			assert(match);
-			assert(match[1] === 'foo');
+			assert.strictEqual(match[1], 'foo');
 		});
 	});
 
@@ -190,7 +190,7 @@ describe('PCRE(pattern[, flags])', function() {
 			var re = PCRE(input);
 			var match = re.exec('/blog/hiking-woods');
 			assert(match);
-			assert(match[1] === 'hiking-woods');
+			assert.strictEqual(match[1], 'hiking-woods');
 		});
 	});
 
@@ -208,8 +208,8 @@ describe('PCRE(pattern[, flags])', function() {
 			var re = PCRE(input);
 			var match = re.exec('/deployments/sf.n8.io/logs');
 			assert(match);
-			assert(match[1] === 'sf.n8.io');
-			assert(match[3] === 'logs');
+			assert.strictEqual(match[1], 'sf.n8.io');
+			assert.strictEqual(match[3], 'logs');
 		});
 	});
 });
