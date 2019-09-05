@@ -142,7 +142,7 @@ function replaceCaptureGroups(
 	return pattern;
 }
 
-namespace createPCRE {
+namespace createPCRE { // eslint-disable-line no-redeclare
 	export interface CharacterClasses {
 		[name: string]: string;
 	}
