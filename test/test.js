@@ -11,6 +11,11 @@ describe('PCRE(pattern[, flags])', function() {
 		assert(isRegExp(r));
 	});
 
+	it('should work with `instanceof`', function() {
+		var r = PCRE();
+		assert(r instanceof PCRE);
+	});
+
 	describe('given "#https?://speakerdeck.com/.*#i"', function() {
 		it('should match "https://speakerdeck.com/tootallnate/node-gyp-baynode-meetup-september-6-2012"', function() {
 			var url =

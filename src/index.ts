@@ -1,36 +1,3 @@
-interface CharacterClasses {
-	[name: string]: string;
-}
-
-interface PCRE extends RegExp {
-	delimiter?: string;
-	pcrePattern: string;
-	pcreFlags: string;
-}
-
-/**
- * Mapping of "character class" names to their JS RegExp equivalent.
- * So that /[:digit:]/ gets converted into /\d/, etc.
- *
- * See: http://en.wikipedia.org/wiki/Regular_expression#Character_classes
- */
-
-const characterClasses: CharacterClasses = {
-	alnum: '[A-Za-z0-9]',
-	word: '[A-Za-z0-9_]',
-	alpha: '[A-Za-z]',
-	blank: '[ \\t]',
-	cntrl: '[\\x00-\\x1F\\x7F]',
-	digit: '\\d',
-	graph: '[\\x21-\\x7E]',
-	lower: '[a-z]',
-	print: '[\\x20-\\x7E]',
-	punct: '[\\]\\[!"#$%&\'()*+,./:;<=>?@\\\\^_`{|}~-]',
-	space: '\\s',
-	upper: '[A-Z]',
-	xdigit: '[A-Fa-f0-9]'
-};
-
 /**
  * Returns a JavaScript RegExp instance from the given PCRE-compatible string.
  * Flags may be passed in after the final delimiter in the `format` string.
@@ -45,7 +12,10 @@ const characterClasses: CharacterClasses = {
  * @public
  */
 
-function createPCRE(pattern: string, namedCaptures?: string[]): PCRE {
+function createPCRE(
+	pattern: string,
+	namedCaptures?: string[]
+): createPCRE.PCRE {
 	pattern = String(pattern || '').trim();
 	let originalPattern = pattern;
 	let delim;
@@ -104,7 +74,7 @@ function createPCRE(pattern: string, namedCaptures?: string[]): PCRE {
 	pattern = pattern.replace(
 		/\[:([^:]+):\]/g,
 		(characterClass: string, name: string) => {
-			return characterClasses[name] || characterClass;
+			return createPCRE.characterClasses[name] || characterClass;
 		}
 	);
 
@@ -112,13 +82,7 @@ function createPCRE(pattern: string, namedCaptures?: string[]): PCRE {
 	// TODO: handle lots more stuff....
 	// http://www.php.net/manual/en/reference.pcre.pattern.syntax.php
 
-	let regexp = new RegExp(pattern, flags) as PCRE;
-
-	regexp.delimiter = delim;
-	regexp.pcrePattern = originalPattern;
-	regexp.pcreFlags = flags;
-
-	return regexp;
+	return new createPCRE.PCRE(pattern, flags, originalPattern, flags, delim);
 }
 
 /**
@@ -178,5 +142,53 @@ function replaceCaptureGroups(
 	return pattern;
 }
 
-createPCRE.characterClasses = characterClasses;
+namespace createPCRE {
+	export interface CharacterClasses {
+		[name: string]: string;
+	}
+
+	export class PCRE extends RegExp {
+		pcrePattern: string;
+		pcreFlags: string;
+		delimiter?: string;
+
+		constructor(
+			pattern: string,
+			flags: string,
+			pcrePattern: string,
+			pcreFlags: string,
+			delimiter?: string
+		) {
+			super(pattern, flags);
+			this.pcrePattern = pcrePattern;
+			this.pcreFlags = pcreFlags;
+			this.delimiter = delimiter;
+		}
+	}
+
+	/**
+	 * Mapping of "character class" names to their JS RegExp equivalent.
+	 * So that /[:digit:]/ gets converted into /\d/, etc.
+	 *
+	 * See: http://en.wikipedia.org/wiki/Regular_expression#Character_classes
+	 */
+
+	export const characterClasses: CharacterClasses = {
+		alnum: '[A-Za-z0-9]',
+		word: '[A-Za-z0-9_]',
+		alpha: '[A-Za-z]',
+		blank: '[ \\t]',
+		cntrl: '[\\x00-\\x1F\\x7F]',
+		digit: '\\d',
+		graph: '[\\x21-\\x7E]',
+		lower: '[a-z]',
+		print: '[\\x20-\\x7E]',
+		punct: '[\\]\\[!"#$%&\'()*+,./:;<=>?@\\\\^_`{|}~-]',
+		space: '\\s',
+		upper: '[A-Z]',
+		xdigit: '[A-Fa-f0-9]'
+	};
+}
+
+createPCRE.prototype = createPCRE.PCRE.prototype;
 export = createPCRE;
