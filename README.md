@@ -1,7 +1,7 @@
 pcre-to-regexp
 ==============
 ### Converts PCRE regexp strings to JavaScript RegExp instances
-[![CircleCI](https://circleci.com/gh/TooTallNate/pcre-to-regexp.svg?style=svg)](https://circleci.com/gh/TooTallNate/pcre-to-regexp)
+[![Build Status](https://github.com/TooTallNate/pcre-to-regexp/workflows/Node%20CI/badge.svg)](https://github.com/TooTallNate/pcre-to-regexp/actions?workflow=Node+CI)
 
 Creates a JavaScript `RegExp` instance from a PCRE regexp string.
 Not currently feature-complete, but works enough for my needs. Send
