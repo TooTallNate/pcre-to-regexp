@@ -188,7 +188,8 @@ namespace createPCRE { // eslint-disable-line no-redeclare
 		upper: '[A-Z]',
 		xdigit: '[A-Fa-f0-9]'
 	};
+
+	createPCRE.prototype = createPCRE.PCRE.prototype;
 }
 
-createPCRE.prototype = createPCRE.PCRE.prototype;
 export = createPCRE;
