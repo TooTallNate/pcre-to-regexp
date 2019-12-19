@@ -11,10 +11,9 @@
  * @return {RegExp} returns a JavaScript RegExp instance from the given `pattern` and optionally `flags`
  * @public
  */
-
 function createPCRE(
 	pattern: string,
-	namedCaptures?: string[]
+	namedCaptures: string[] = []
 ): createPCRE.PCRE {
 	pattern = String(pattern || '').trim();
 	let originalPattern = pattern;
@@ -82,7 +81,14 @@ function createPCRE(
 	// TODO: handle lots more stuff....
 	// http://www.php.net/manual/en/reference.pcre.pattern.syntax.php
 
-	return new createPCRE.PCRE(pattern, flags, originalPattern, flags, delim);
+	return new createPCRE.PCRE(
+		pattern,
+		flags,
+		namedCaptures,
+		originalPattern,
+		flags,
+		delim
+	);
 }
 
 /**
@@ -92,7 +98,6 @@ function createPCRE(
  *
  * @private
  */
-
 function replaceCaptureGroups(
 	pattern: string,
 	fn: (group: string) => string
@@ -142,12 +147,14 @@ function replaceCaptureGroups(
 	return pattern;
 }
 
-namespace createPCRE { // eslint-disable-line no-redeclare
+// eslint-disable-next-line no-redeclare
+namespace createPCRE {
 	export interface CharacterClasses {
 		[name: string]: string;
 	}
 
 	export class PCRE extends RegExp {
+		namedCaptures: string[];
 		pcrePattern: string;
 		pcreFlags: string;
 		delimiter?: string;
@@ -155,11 +162,13 @@ namespace createPCRE { // eslint-disable-line no-redeclare
 		constructor(
 			pattern: string,
 			flags: string,
+			namedCaptures: string[],
 			pcrePattern: string,
 			pcreFlags: string,
 			delimiter?: string
 		) {
 			super(pattern, flags);
+			this.namedCaptures = namedCaptures;
 			this.pcrePattern = pcrePattern;
 			this.pcreFlags = pcreFlags;
 			this.delimiter = delimiter;
@@ -172,7 +181,6 @@ namespace createPCRE { // eslint-disable-line no-redeclare
 	 *
 	 * See: http://en.wikipedia.org/wiki/Regular_expression#Character_classes
 	 */
-
 	export const characterClasses: CharacterClasses = {
 		alnum: '[A-Za-z0-9]',
 		word: '[A-Za-z0-9_]',
